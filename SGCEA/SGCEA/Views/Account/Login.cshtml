@@ -1,0 +1,76 @@
+﻿@model SGCEA.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div class="login-card">
+    <div class="login-logo">
+        <img src="~/img/logo.png" alt="Logo SGCEA" />
+        <h2>SGCEA</h2>
+        <p>Centro de Envejecimiento Activo<br />Luis Baudilio Víquez Arrieta</p>
+    </div>
+
+    <form asp-controller="Account" asp-action="Login" method="post">
+        @Html.AntiForgeryToken()
+
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+        {
+            <div class="alert alert-danger mb-3">
+                <i class="fa fa-exclamation-circle me-1"></i>
+                Correo o contraseña incorrectos.
+            </div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" placeholder="correo@ejemplo.com" autocomplete="email" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Password" class="form-label"></label>
+            <div class="input-group">
+                <input asp-for="Password" id="passwordInput" class="form-control"
+                       placeholder="••••••••" autocomplete="current-password" />
+                <button type="button" class="btn btn-outline-secondary" id="togglePassword"
+                        tabindex="-1">
+                    <i class="fa fa-eye" id="eyeIcon"></i>
+                </button>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100" style="padding: 10px;">
+            <i class="fa fa-sign-in-alt me-1"></i> Ingresar
+        </button>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Trim correo al enviar
+        document.querySelector('form').addEventListener('submit', function () {
+            var emailInput = document.getElementById('Email');
+            emailInput.value = emailInput.value.trim();
+        });
+
+        // Toggle contraseña
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            var input = document.getElementById('passwordInput');
+            var icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    </script>
+}
